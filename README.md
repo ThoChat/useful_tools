@@ -16,6 +16,27 @@ uv run merge_pdfs.py output_name.pdf input1.pdf input2.svg ...
 
 ---
 
+### pdf_spliter.py
+Split a PDF into individual pages, each saved as a separate PDF file.
+
+Creates a folder named after the input PDF (without extension) inside the
+output directory, containing one PDF per page of the original document.
+
+**Usage:**
+```bash
+uv run pdf_spliter.py input.pdf
+uv run pdf_spliter.py input.pdf --output-dir /path/to/output --digits 4
+```
+
+**Options:**
+- `input` - Path to the input PDF file (required)
+- `--output-dir` - Directory to create the output folder in (default: current directory)
+- `--digits` - Number of zero-padded digits in page filenames (default: 3)
+
+**Dependencies:** pypdf
+
+---
+
 ### watermark.py
 Add a diagonal text watermark to an image.
 
