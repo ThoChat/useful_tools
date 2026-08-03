@@ -53,3 +53,24 @@ uv run watermark.py input_name.png output_name.png --text "Your Text" --opacity 
 - `--font-size` - Font size (default: 60)
 
 **Dependencies:** Pillow (PIL)
+
+---
+
+### pdf_to_esp.py
+Convert PDF files into EPS (Encapsulated PostScript) files. Accepts a single
+PDF or a folder of PDFs; each page is written as a separate EPS file placed
+next to the source PDF. Requires Ghostscript (`brew install ghostscript`).
+
+**Usage:**
+```bash
+uv run pdf_to_esp.py document.pdf
+uv run pdf_to_esp.py /path/to/folder/with/pdfs
+uv run pdf_to_esp.py document.pdf --gs-path /opt/homebrew/bin/gs --dpi 600
+```
+
+**Options:**
+- `input` - Path to a PDF file or a folder containing PDF files (required)
+- `--gs-path` - Path to the Ghostscript executable (default: `gs` from PATH)
+- `--dpi` - Rendering resolution in dots per inch (default: 1000)
+
+**Dependencies:** pypdf, Ghostscript (system binary)
