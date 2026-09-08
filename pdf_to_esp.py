@@ -50,7 +50,9 @@ def find_pdf_files(target: str) -> list[Path]:
         return [path]
 
     if path.is_dir():
-        pdfs = sorted(p for p in path.iterdir() if p.is_file() and p.suffix.lower() == ".pdf")
+        pdfs = sorted(
+            p for p in path.iterdir() if p.is_file() and p.suffix.lower() == ".pdf"
+        )
         if not pdfs:
             raise ValueError(f"No PDF files found in directory: {target}")
         return pdfs
@@ -58,7 +60,9 @@ def find_pdf_files(target: str) -> list[Path]:
     raise ValueError(f"Unsupported input type: {target}")
 
 
-def convert_pdf_to_eps(pdf_path: Path, gs_path: str = "gs", dpi: int = 1000) -> list[Path]:
+def convert_pdf_to_eps(
+    pdf_path: Path, gs_path: str = "gs", dpi: int = 1000
+) -> list[Path]:
     """Convert every page of a single PDF into EPS files.
 
     Uses Ghostscript's ``eps2write`` device. Each page is rendered as its own

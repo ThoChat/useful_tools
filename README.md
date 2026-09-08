@@ -74,3 +74,41 @@ uv run pdf_to_esp.py document.pdf --gs-path /opt/homebrew/bin/gs --dpi 600
 - `--dpi` - Rendering resolution in dots per inch (default: 1000)
 
 **Dependencies:** pypdf, Ghostscript (system binary)
+
+---
+
+### latexdiff_track_changes.py
+Wrapper around [`latexdiff`](https://www.ctan.org/pkg/latexdiff) — the LaTeX
+equivalent of Microsoft Word's *Track Changes*. Give it an old and a new
+`.tex` file and it produces a diff document where deletions are struck through
+and additions are underlined/coloured. Optionally compiles the diff straight
+to a PDF.
+
+Requires `latexdiff` (ships with TeX Live / MacTeX; otherwise
+`tlmgr install latexdiff` or `sudo apt install latexdiff`). `--compile` also
+needs a LaTeX engine (`latexmk` by default).
+
+**Usage:**
+```bash
+uv run latexdiff_track_changes.py old.tex new.tex
+uv run latexdiff_track_changes.py old.tex new.tex -o changes.tex
+uv run latexdiff_track_changes.py old.tex new.tex --flatten --compile
+uv run latexdiff_track_changes.py old.tex new.tex --type CFONT
+uv run latexdiff_track_changes.py old.tex new.tex -- --math-markup=whole
+```
+
+**Options:**
+- `old` - Path to the OLD version of the LaTeX document (required)
+- `new` - Path to the NEW version of the LaTeX document (required)
+- `-o`, `--output` - Path for the generated diff `.tex` (default: `<new-stem>_diff.tex` next to the new file)
+- `--flatten` - Expand `\input`/`\include` and `\bibliography` before diffing (multi-file projects)
+- `--type` - latexdiff markup style, e.g. `UNDERLINE` (default), `CFONT`, `CULINECHBAR`, `CCHANGEBAR`
+- `--subtype` - latexdiff markup subtype, e.g. `SAFE` (default), `ZLABEL`, `DVIPSCOL`
+- `--encoding` - Character encoding of the input files
+- `--latexdiff-path` - Name or path of the `latexdiff` executable (default: `latexdiff`)
+- `--latexdiff-arg` - Extra raw argument forwarded to latexdiff (repeatable)
+- `--compile` - Also compile the generated diff `.tex` into a PDF
+- `--compiler` - LaTeX build tool used with `--compile` (default: `latexmk`)
+- Arguments after `--` are forwarded verbatim to `latexdiff`
+
+**Dependencies:** latexdiff (system binary), a LaTeX engine for `--compile`
