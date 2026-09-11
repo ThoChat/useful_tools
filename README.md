@@ -56,6 +56,30 @@ uv run watermark.py input_name.png output_name.png --text "Your Text" --opacity 
 
 ---
 
+### pdf_to_txt.py
+Convert a PDF into a clean plain-text file that is easy for a large
+language model to read. Preserves reading order and paragraph structure,
+and marks page boundaries with `--- Page N ---` lines (disable with
+`--plain`). Scanned PDFs without an OCR text layer produce a warning.
+
+**Usage:**
+```bash
+uv run pdf_to_txt.py document.pdf
+uv run pdf_to_txt.py document.pdf -o document.txt
+uv run pdf_to_txt.py document.pdf --start-page 2 --end-page 10
+```
+
+**Options:**
+- `input` - Path to the input PDF file (required)
+- `-o`, `--output` - Output `.txt` path (default: `<input-stem>.txt` next to the PDF)
+- `--start-page` - First page to extract, 1-based (default: 1)
+- `--end-page` - Last page to extract, inclusive, 1-based (default: last page)
+- `--plain` - Omit the `--- Page N ---` markers
+
+**Dependencies:** pymupdf
+
+---
+
 ### pdf_to_esp.py
 Convert PDF files into EPS (Encapsulated PostScript) files. Accepts a single
 PDF or a folder of PDFs; each page is written as a separate EPS file placed
