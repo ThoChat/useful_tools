@@ -8,6 +8,7 @@ This is a Python toolbox composed of diverse everyday tools. Each tool is a stan
 - Follow PEP 8 style.
 - Each function should have a docstring describing its purpose, parameters, and return values.
 - The script should include a module-level docstring with usage examples.
+- the code should be tested using unit test you create as when as explicit test stated in the "Testing section" of these instructions
 
 ## After creating the tool:
 - Update `README.md` with a section for the new tool, including a brief description, usage, and options.
@@ -15,3 +16,7 @@ This is a Python toolbox composed of diverse everyday tools. Each tool is a stan
 
 ## Tool Description
 ...
+
+
+## Testing 
+N.A
