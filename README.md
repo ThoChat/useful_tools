@@ -136,3 +136,57 @@ uv run latexdiff_track_changes.py old.tex new.tex -- --math-markup=whole
 - Arguments after `--` are forwarded verbatim to `latexdiff`
 
 **Dependencies:** latexdiff (system binary), a LaTeX engine for `--compile`
+
+---
+
+### qr_code_generator.py
+Generate a QR code from a link (or any text). By default it opens a small GUI
+where you paste the link, see a live preview, and choose the resolution,
+colours, error correction, output format and output file name/folder.
+The window is built with CustomTkinter: card layout, segmented controls, and
+light/dark mode that follows the system (or set it with the Auto/Light/Dark
+switch in the header). Use `--headless` to skip the window and write the file directly (scripts,
+SSH sessions); without `--headless`, the command-line options pre-fill the GUI.
+
+Raster images are exactly `--size` pixels wide with crisp, whole-pixel modules;
+SVG and PDF are true vector files (the PDF page measures `size / dpi` inches).
+The tool warns when the chosen colours are likely to scan poorly (low contrast
+or light-on-dark).
+
+**Usage:**
+```bash
+uv run qr_code_generator.py                                  # open the GUI
+uv run qr_code_generator.py "https://example.com"            # GUI, link pre-filled
+uv run qr_code_generator.py --headless "https://example.com" # -> qrcode.png
+uv run qr_code_generator.py --headless "https://example.com" -o website.svg
+uv run qr_code_generator.py --headless "https://example.com" -o code \
+    --format png --size 2048 --fg "#1d3557" --bg transparent
+uv run qr_code_generator.py --headless "https://example.com" -o flyer.pdf \
+    --size 1200 --dpi 300 --error-correction H
+```
+
+**Options:**
+- `data` - Link or text to encode (required with `--headless`; pre-fills the GUI otherwise)
+- `--headless` - Generate the file without opening the GUI
+- `-o`, `--output` - Output file name or path; a missing extension is added from `--format` (default: `qrcode.<format>` in the current folder)
+- `-f`, `--format` - `png`, `jpg`, `bmp`, `tiff`, `webp`, `svg` or `pdf` (default: taken from the `--output` extension, else `png`)
+- `-s`, `--size` - Image width/height in pixels (default: 1024)
+- `--dpi` - Print resolution stored in raster files; also sets the PDF page size (default: 300)
+- `--fg`, `--color` - QR colour, as a name (`navy`) or hex (`#1d3557`, `#1d355780` with alpha) (default: `#000000`)
+- `--bg`, `--background` - Background colour, or `transparent` (png/tiff/webp/svg/pdf only) (default: `#ffffff`)
+- `-e`, `--error-correction` - `L` (~7%), `M` (~15%), `Q` (~25%) or `H` (~30%) of the code can be damaged or covered and still scan (default: `M`)
+- `--border` - Quiet-zone width in modules; 4 is the QR standard (default: 4)
+
+**GUI tips:** Return or Cmd/Ctrl+S saves; click a colour swatch to open the
+colour picker; the format selector decides the file extension; you're asked
+before an existing file is replaced, and "Show in Finder" (or "Show in folder")
+appears after saving. In headless mode, an existing file is overwritten.
+
+**Tests:**
+```bash
+uv run python -m unittest discover -s tests -v
+# also decode every generated file back with OpenCV (test-only extra):
+uv run --with opencv-python-headless python -m unittest discover -s tests -v
+```
+
+**Dependencies:** qrcode, Pillow, reportlab (PDF output); GUI only: customtkinter and tkinter (ships with most Python installs)
