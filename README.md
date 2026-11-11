@@ -38,21 +38,61 @@ uv run pdf_spliter.py input.pdf --output-dir /path/to/output --digits 4
 ---
 
 ### watermark.py
-Add a diagonal text watermark to an image.
+Add a text watermark to an image. By default it opens a small GUI (same look
+as the QR code generator: card layout, segmented controls, light/dark mode)
+where you open an image, type your text, see a live preview, and choose the
+font, size, colour, outline, opacity, layout (tiled pattern, centred, or a
+bottom-right signature), angle, spacing, output format and file name.
+Press and hold the preview to compare with the original. Use `--headless`
+to skip the window and write the file directly; without `--headless`, the
+command-line options pre-fill the GUI.
+
+The text size can be given in pixels (`60`) or as a percentage of the
+image's shorter side (`5%`), so the same settings suit small and large
+photos. Phone photos are turned upright using their EXIF orientation; the
+colour profile and DPI are kept, other metadata (camera, GPS...) is not
+copied. Transparent images stay transparent in PNG/TIFF/WEBP. The original
+image is never overwritten.
 
 **Usage:**
 ```bash
-uv run watermark.py input_name.png output_name.png --text "Your Text" --opacity 30 --font-size 60
+uv run watermark.py                                   # open the GUI
+uv run watermark.py photo.jpg                         # GUI, image pre-loaded
+uv run watermark.py --headless photo.jpg              # -> photo_watermarked.jpg
+uv run watermark.py --headless photo.jpg out.png --text "Your Text" --opacity 30 --font-size 60
+uv run watermark.py --headless photo.jpg --layout corner --angle 0 \
+    --font-size 4% --color white --opacity 70 --outline --text "© Jane Doe"
 ```
 
 **Options:**
-- `input` - Input image path (required)
-- `output` - Output image path (required)
-- `--text` - Watermark text (default: "All rights reserved")
+- `input` - Image to watermark (required with `--headless`; pre-loads the GUI otherwise)
+- `output` - Output file or folder (default: `<input-stem>_watermarked.<format>` next to the input); a missing extension is added from the format
+- `--headless` - Write the file without opening the GUI
+- `-t`, `--text` - Watermark text (default: "All rights reserved")
+- `--font-size` - Text size in pixels (`60`) or percent of the shorter image side (`5%`) (default: `5%`)
+- `--font` - `sans`, `serif`, `mono`, or a path to a `.ttf`/`.otf`/`.ttc` file (default: `sans`)
+- `--color`, `--colour` - Text colour, as a name (`white`) or hex (`#c8c8c8`) (default: `#c8c8c8`)
 - `--opacity` - Opacity percentage 0-100 (default: 30)
-- `--font-size` - Font size (default: 60)
+- `--outline` - Thin contrasting outline around the text (stands out on busy images)
+- `--layout` - `tiled` (repeated over the image), `centre` (one copy) or `corner` (bottom-right) (default: `tiled`)
+- `--angle` - Text angle in degrees, -90 to 90; positive tilts upwards (default: 30)
+- `--spacing` - Gap between tiled copies, in multiples of the text size (default: 2)
+- `-f`, `--format` - `png`, `jpg`, `webp`, `tiff` or `bmp` (default: from the output extension, else the input's format, else `png`)
+- `-q`, `--quality` - JPG/WEBP quality 1-100 (default: 95)
 
-**Dependencies:** Pillow (PIL)
+**GUI tips:** Cmd/Ctrl+O opens an image (or click the empty preview), Cmd/Ctrl+S
+or Return in the text field saves; paste a path into the image field to load
+it. Opening an image sets the output name, folder and format to
+`<name>_watermarked` next to it. You're asked before an existing file is
+replaced, and "Show in Finder" (or "Show in folder") appears after saving.
+In headless mode, an existing output file is overwritten.
+
+**Tests:**
+```bash
+uv run python -m unittest tests.test_watermark -v
+```
+
+**Dependencies:** Pillow; GUI only: customtkinter and tkinter (ships with most Python installs)
 
 ---
 
